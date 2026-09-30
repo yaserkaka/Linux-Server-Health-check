@@ -1,0 +1,35 @@
+# {{ ansible_managed }}
+# Change values in the Ansible inventory, not here.
+
+CPU_WARN={{ server_health_cpu_warn }}
+CPU_CRIT={{ server_health_cpu_crit }}
+MEM_WARN={{ server_health_mem_warn }}
+MEM_CRIT={{ server_health_mem_crit }}
+DISK_WARN={{ server_health_disk_warn }}
+DISK_CRIT={{ server_health_disk_crit }}
+INODE_CRIT={{ server_health_inode_crit }}
+LOAD_WARN_PER_CORE={{ server_health_load_warn_per_core }}
+LOAD_CRIT_PER_CORE={{ server_health_load_crit_per_core }}
+DISK_MOUNTS="{{ server_health_disk_mounts }}"
+
+PING_TARGET="{{ server_health_ping_target }}"
+INTERNET_URL="{{ server_health_internet_url }}"
+DNS_TEST_NAME="{{ server_health_dns_test_name }}"
+DNS_SERVER="{{ server_health_dns_server }}"
+HTTP_URL="{{ server_health_http_url }}"
+TCP_PORTS="{{ server_health_tcp_ports }}"
+NET_TIMEOUT={{ server_health_net_timeout }}
+
+SERVICES="{{ server_health_services }}"
+SELF_HEAL_SERVICES="{{ server_health_self_heal_services }}"
+MAX_RESTART_ATTEMPTS={{ server_health_max_restart_attempts }}
+RESTART_WINDOW_SEC={{ server_health_restart_window_sec }}
+RESTART_WAIT_SEC={{ server_health_restart_wait_sec }}
+FAILED_UNITS_IGNORE="{{ server_health_failed_units_ignore }}"
+
+LOG_DIR="{{ server_health_log_dir }}"
+STATE_DIR="{{ server_health_state_dir }}"
+ALERT_CMD="/usr/bin/python3 {{ server_health_install_dir }}/python/alert.py"
+ALERT_ON="{{ server_health_alert_on }}"
+ALERT_CHANNELS="{{ server_health_alert_channels }}"
+ALERT_COOLDOWN_SEC={{ server_health_alert_cooldown_sec }}

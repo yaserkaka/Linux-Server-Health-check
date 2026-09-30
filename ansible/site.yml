@@ -1,0 +1,6 @@
+---
+- name: Deploy server health monitoring
+  hosts: monitored
+  become: true
+  roles:
+    - server_health

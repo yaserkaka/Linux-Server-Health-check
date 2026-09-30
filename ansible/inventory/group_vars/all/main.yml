@@ -1,0 +1,4 @@
+---
+server_health_alert_channels: "slack"
+server_health_ping_target: "1.1.1.1"
+server_health_dns_test_name: "ubuntu.com"

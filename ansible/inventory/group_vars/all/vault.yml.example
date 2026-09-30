@@ -1,0 +1,7 @@
+---
+# cp vault.yml.example vault.yml
+# ansible-vault encrypt vault.yml
+# only commit vault.yml after it has been encrypted
+vault_slack_webhook_url: "https://hooks.slack.com/services/XXX/YYY/ZZZ"
+vault_discord_webhook_url: ""
+vault_smtp_password: ""

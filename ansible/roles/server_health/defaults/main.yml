@@ -1,0 +1,63 @@
+---
+# where the repo lives on the control node (scripts/, python/, systemd/ ...)
+server_health_repo_root: "{{ role_path }}/../../.."
+
+server_health_install_dir: /opt/server-health
+server_health_config_dir: /etc/server-health
+server_health_log_dir: /var/log/server-health
+server_health_state_dir: /var/lib/server-health
+
+server_health_packages:
+  - bash
+  - curl
+  - iproute2
+  - iputils-ping
+  - bind9-dnsutils
+  - procps
+  - util-linux
+  - python3
+  - logrotate
+
+# thresholds
+server_health_cpu_warn: 75
+server_health_cpu_crit: 85
+server_health_mem_warn: 80
+server_health_mem_crit: 90
+server_health_disk_warn: 70
+server_health_disk_crit: 80
+server_health_inode_crit: 90
+server_health_load_warn_per_core: 1.0
+server_health_load_crit_per_core: 2.0
+server_health_disk_mounts: "/"
+
+# network
+server_health_ping_target: "1.1.1.1"
+server_health_internet_url: "https://www.google.com"
+server_health_dns_test_name: "ubuntu.com"
+server_health_dns_server: ""
+server_health_http_url: "http://localhost/"
+server_health_tcp_ports: "22"
+server_health_net_timeout: 3
+
+# services
+server_health_services: "ssh"
+server_health_self_heal_services: ""
+server_health_max_restart_attempts: 3
+server_health_restart_window_sec: 3600
+server_health_restart_wait_sec: 3
+server_health_failed_units_ignore: "server-health.service"
+
+# alerting
+server_health_alert_on: "CRITICAL RECOVERED"
+server_health_alert_channels: "none"
+server_health_alert_cooldown_sec: 1800
+
+# secrets - set these in an ansible-vault file, not here
+server_health_slack_webhook_url: "{{ vault_slack_webhook_url | default('') }}"
+server_health_discord_webhook_url: "{{ vault_discord_webhook_url | default('') }}"
+server_health_smtp_host: ""
+server_health_smtp_port: 587
+server_health_smtp_user: ""
+server_health_smtp_password: "{{ vault_smtp_password | default('') }}"
+server_health_email_from: ""
+server_health_email_to: ""

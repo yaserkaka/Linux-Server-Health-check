@@ -1,0 +1,36 @@
+---
+# Installs the services that are being monitored, for the lab only.
+# In a real environment these are managed by their own roles.
+- name: Web servers get nginx
+  hosts: webservers
+  become: true
+  tasks:
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Start nginx
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: started
+        enabled: true
+
+- name: App servers get docker
+  hosts: appservers
+  become: true
+  tasks:
+    - name: Install docker.io
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Start docker
+      ansible.builtin.systemd_service:
+        name: docker
+        state: started
+        enabled: true

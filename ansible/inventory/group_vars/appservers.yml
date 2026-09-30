@@ -1,0 +1,6 @@
+---
+server_health_services: "docker ssh"
+server_health_self_heal_services: "docker"
+server_health_tcp_ports: "22"
+server_health_http_url: ""
+server_health_disk_mounts: "/ /var/lib/docker"

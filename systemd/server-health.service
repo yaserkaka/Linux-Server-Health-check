@@ -1,0 +1,21 @@
+[Unit]
+Description=Server health check and self-healing
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/server-health/scripts/health-check.sh
+# webhook URLs / SMTP credentials, optional (the - means "ok if missing")
+EnvironmentFile=-/etc/server-health/alert.env
+# 1 = warnings, 2 = critical findings. Those are results, not a failed
+# unit, otherwise the failed-units check would report itself.
+SuccessExitStatus=1 2
+TimeoutStartSec=180
+Nice=10
+IOSchedulingClass=idle
+
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only

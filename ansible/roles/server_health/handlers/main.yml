@@ -1,0 +1,11 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+# only fires when something changed, so reruns stay idempotent
+- name: Run health check
+  ansible.builtin.systemd_service:
+    name: server-health.service
+    state: started
+    no_block: true

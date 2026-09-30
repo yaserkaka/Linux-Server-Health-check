@@ -1,0 +1,92 @@
+---
+- name: Only Ubuntu is supported
+  ansible.builtin.assert:
+    that: ansible_facts['distribution'] == 'Ubuntu'
+    fail_msg: "server_health supports Ubuntu only, got {{ ansible_facts['distribution'] }}"
+    quiet: true
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    name: "{{ server_health_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: root
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { path: "{{ server_health_install_dir }}", mode: "0755" }
+    - { path: "{{ server_health_config_dir }}", mode: "0755" }
+    - { path: "{{ server_health_log_dir }}", mode: "0750", group: adm }
+    - { path: "{{ server_health_state_dir }}", mode: "0700" }
+
+# mode: preserve keeps the exec bits tracked in git (755 for entry
+# points, 644 for libraries)
+- name: Copy bash scripts
+  ansible.builtin.copy:
+    src: "{{ server_health_repo_root }}/scripts/"
+    dest: "{{ server_health_install_dir }}/scripts/"
+    owner: root
+    group: root
+    mode: preserve
+  notify: Run health check
+
+- name: Copy python alerting
+  ansible.builtin.copy:
+    src: "{{ server_health_repo_root }}/python/"
+    dest: "{{ server_health_install_dir }}/python/"
+    owner: root
+    group: root
+    mode: preserve
+
+- name: Write health.conf
+  ansible.builtin.template:
+    src: health.conf.j2
+    dest: "{{ server_health_config_dir }}/health.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Run health check
+
+- name: Write alert.env (secrets)
+  ansible.builtin.template:
+    src: alert.env.j2
+    dest: "{{ server_health_config_dir }}/alert.env"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Install systemd units
+  ansible.builtin.copy:
+    src: "{{ server_health_repo_root }}/systemd/{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - server-health.service
+    - server-health.timer
+  notify: Reload systemd
+
+- name: Install logrotate config
+  ansible.builtin.copy:
+    src: "{{ server_health_repo_root }}/config/logrotate/server-health"
+    dest: /etc/logrotate.d/server-health
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Apply systemd changes before enabling the timer
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable and start the timer
+  ansible.builtin.systemd_service:
+    name: server-health.timer
+    state: started
+    enabled: true

@@ -1,0 +1,5 @@
+---
+server_health_services: "nginx ssh"
+server_health_self_heal_services: "nginx"
+server_health_tcp_ports: "22 80"
+server_health_http_url: "http://localhost/"
